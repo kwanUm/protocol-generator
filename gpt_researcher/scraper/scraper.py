@@ -76,7 +76,7 @@ class Scraper:
         """
         loader = PyMuPDFLoader(url)
         doc = loader.load()
-        return str(doc)
+        return str(doc) # TODO(orik) is that the right way to get the text?
 
     def scrape_pdf_with_arxiv(self, query) -> str:
         """Scrape a pdf with arxiv

@@ -46,7 +46,7 @@ class GPTResearcher:
                             f"🧠 I will conduct my research based on the following queries: {sub_queries}...",
                             self.websocket)
 
-        # Run Sub-Queries
+        # Run Sub-Queries   # TODO parallel
         for sub_query in sub_queries:
             await stream_output("logs", f"\n🔎 Running research for '{sub_query}'...", self.websocket)
             scraped_sites = await self.scrape_sites_by_query(sub_query)

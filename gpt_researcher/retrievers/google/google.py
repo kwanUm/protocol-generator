@@ -58,31 +58,48 @@ class GoogleSearch:
         """
         """Useful for general internet search queries using the Google API."""
         print("Searching with query {0}...".format(self.query))
-        url = f"https://www.googleapis.com/customsearch/v1?key={self.api_key}&cx={self.cx_key}&q={self.query}&start=1"
-        resp = requests.get(url)
+        search_sites = [
+            'www.protocols.io',
+            'bio-protocol.org',
+            # 'www.biorxiv.org',
+            # 'www.researchgate.net',
+            # 'www.nature.com',
+        ]
 
-        if resp is None:
-            return
-        try:
-            search_results = json.loads(resp.text)
-        except Exception:
-            return
-        if search_results is None:
-            return
+        all_results = []
+        for site in search_sites:
+            print(f"Searching site: {site}")
 
-        results = search_results.get("items", [])
-        search_results = []
+            url = f"https://www.googleapis.com/customsearch/v1?key={self.api_key}&cx={self.cx_key}&q={self.query}&start=1"
+            url += f"&siteSearch={site}"
+            # make the spaces in the query into %20
+            # url = url.replace(" ", "%20")
+            resp = requests.get(url)
 
-        # Normalizing results to match the format of the other search APIs
-        for result in results:
-            # skip youtube results
-            if "youtube.com" in result["link"]:
-                continue
-            search_result = {
-                "title": result["title"],
-                "href": result["link"],
-                "body": result["snippet"],
-            }
-            search_results.append(search_result)
+            if resp is None:
+                return
+            try:
+                search_results = json.loads(resp.text)
+            except Exception:
+                return
+            if search_results is None:
+                return
 
-        return search_results
+            results = search_results.get("items", [])
+            search_results = []
+
+            # Normalizing results to match the format of the other search APIs
+            for result in results:
+                # skip youtube results
+                if "youtube.com" in result["link"]:
+                    continue
+                search_result = {
+                    "title": result["title"],
+                    "href": result["link"],
+                    "body": result["snippet"],
+                }
+                search_results.append(search_result)
+            
+            all_results += search_results[:max_results // len(search_sites)]
+
+        return all_results

@@ -16,6 +16,7 @@ from selenium.webdriver.safari.options import Options as SafariOptions
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 from fastapi import WebSocket
+from loguru import logger
 
 from scraping import scrape_skills, processing as summary
 from scraping.processing.html import extract_hyperlinks, format_hyperlinks
@@ -84,6 +85,10 @@ async def async_browse(
 
         return f"Information gathered from url {url}: {summary_text}"
     except Exception as e:
+        import traceback
+        tb_str = traceback.format_exception(etype=type(e), value=e, tb=e.__traceback__)
+        traceback_details = "".join(tb_str)
+        logger.error(f"An error occurred while processing the url {url}: {e}\n{traceback_details}")
         print(f"An error occurred while processing the url {url}: {e}")
         return f"Error processing the url {url}: {e}"
 
@@ -154,6 +159,7 @@ def scrape_text_with_selenium(selenium_web_browser: str, user_agent: str, url: s
             options.add_argument("--remote-debugging-port=9222")
         options.add_argument("--no-sandbox")
         options.add_experimental_option("prefs", {"download_restrictions": 3})
+        # options.binary_location = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
         driver = webdriver.Chrome(options=options)
 
     print(f"scraping url {url}...")

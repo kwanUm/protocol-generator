@@ -1,7 +1,7 @@
 const GPTResearcher = (() => {
     const init = () => {
       // Not sure, but I think it would be better to add event handlers here instead of in the HTML
-      //document.getElementById("startResearch").addEventListener("click", startResearch);
+      // document.getElementById("startResearch").addEventListener("click", startResearch);
       document.getElementById("copyToClipboard").addEventListener("click", copyToClipboard);
 
       updateState("initial");
@@ -14,6 +14,10 @@ const GPTResearcher = (() => {
   
       addAgentResponse({ output: "🤔 Thinking about research questions for the task..." });
   
+      // send start to socket
+      
+
+
       listenToSockEvents();
     };
   
@@ -37,7 +41,7 @@ const GPTResearcher = (() => {
       };
   
       socket.onopen = (event) => {
-        const task = document.querySelector('input[name="task"]').value;
+        const task = document.querySelector('textarea[name="task"]').value;
         const report_type = document.querySelector('select[name="report_type"]').value;
         const agent = document.querySelector('input[name="agent"]:checked').value;
   

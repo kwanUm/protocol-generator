@@ -220,7 +220,7 @@ async def generate_report(query, context, agent_role_prompt, report_type, websoc
             llm_provider=cfg.llm_provider,
             stream=True,
             websocket=websocket,
-            max_tokens=cfg.smart_token_limit
+            # max_tokens=cfg.smart_token_limit # TODO(orik): should we limit the tokens in a long protocol generation?
         )
     except Exception as e:
         print(f"{Fore.RED}Error in generate_report: {e}{Style.RESET_ALL}")

@@ -7,7 +7,7 @@ def generate_search_queries_prompt(question, max_iterations=3):
     Returns: str: The search queries prompt for the given question
     """
 
-    return f'Write {max_iterations} google search queries to search online that form an objective opinion from the following: "{question}"' \
+    return f'Write {max_iterations} search queries to search online on protocols.io website that form an objective opinion from the following: "{question}"' \
            f'Use the current date if needed: {datetime.now().strftime("%B %d, %Y")}.\n' \
            f'You must respond with a list of strings in the following format: ["query 1", "query 2", "query 3"].'
 
@@ -35,6 +35,27 @@ def generate_report_prompt(question, context, report_format="apa", total_words=1
             of the sentence or paragraph that reference them.\n"\
             f"Please do your best, this is very important to my career. " \
             f"Assume that the current date is {datetime.now().strftime('%B %d, %Y')}"
+
+
+def generate_lab_protocol(question, context, report_format="apa", total_words=1000):
+    """ Generates a lab protocol for a given laboratory method.
+    Args:
+        method_name (str): The name of the laboratory method for which the protocol is being written
+        steps (list): A list of steps involved in the method
+        equipment (list): A list of equipment required for the method
+        safety_precautions (list): A list of safety precautions to be followed during the method
+    Returns:
+        str: The lab protocol for the given method
+    """
+
+    protocol = f'"""{context}"""\n\n' \
+                f'Using the above information, write a detailed lab protocol for the following method: "{question}"\n' \
+                f'The lab protocol must have a minimum length of 1000 words.\n'
+                # f'Include relevant facts, figures, and numbers whenever available.\n' \
+                # f'You MUST include all relevant source urls.\n'
+                # TODO(ori): more?
+
+    return protocol
 
 
 def generate_resource_report_prompt(question, context, report_format="apa", total_words=1000):
@@ -75,7 +96,8 @@ def get_report_by_type(report_type):
     report_type_mapping = {
         'research_report': generate_report_prompt,
         'resource_report': generate_resource_report_prompt,
-        'outline_report': generate_outline_report_prompt
+        'outline_report': generate_outline_report_prompt,
+        'lab_protocol': generate_lab_protocol
     }
     return report_type_mapping[report_type]
 
@@ -104,6 +126,12 @@ def auto_agent_instructions():
         {
             "server:  "🌍 Travel Agent",
             "agent_role_prompt": "You are a world-travelled AI tour guide assistant. Your main purpose is to draft engaging, insightful, unbiased, and well-structured travel reports on given locations, including history, attractions, and cultural insights."
+        }
+        task: "how to perform a PCR test?"
+        response:
+        {
+        "server": "🔬 Protocol Writing Agent",
+        "agent_role_prompt": "You are a specialized AI protocol writing assistant with expertise in laboratory procedures. Your main task is to develop detailed, accurate, and easy-to-follow protocols for specific laboratory tests, utilizing resources such as protocols.io, bio-protocols.org and other lab protocol repositories to ensure the information is up-to-date and reliable."
         }
     """
 
